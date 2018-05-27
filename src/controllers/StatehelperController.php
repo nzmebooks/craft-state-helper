@@ -55,23 +55,19 @@ class StatehelperController extends Controller
         $this->requirePostRequest();
         $request = Craft::$app->getRequest();
 
-        if (!Craft::$app->getUser()->id) {
+        $userId = Craft::$app->getUser()->id;
+
+        if (!$userId) {
             return false;
-        }
-
-        $userId = Craft::$app->user->getUser()->id;
-
-        foreach ($request->getPost() as $key => $value) {
-            $data[$key] = $value;
         }
 
         $model = new StatehelperModel();
         $model->userId = $userId;
-        $model->name   = $data['name'];
-        $model->value  = $data['value'];
+        $model->name   = $request->getBodyParam('name');
+        $model->value  = $request->getBodyParam('value');
 
         if ($model->validate()) {
-            $response = StatehelperService::saveState($model);
+            $response = Statehelper::$plugin->statehelperService->saveState($model);
         }
 
         if ($request->getAcceptsJson()) {
@@ -81,9 +77,9 @@ class StatehelperController extends Controller
                 return $this->asJson(['errors' => [Craft::t("Couldn't save state.")]]);
             }
         } else {
-            Craft::$app->urlManager->setRouteVariables(array(
-                'state' => $model
-            ));
+            Craft::$app->getUrlManager()->setRouteParams([
+              'state' => $model
+            ]);
 
             return $this->redirectToPostedUrl();
         }
@@ -98,20 +94,15 @@ class StatehelperController extends Controller
      */
     public function actionGetState(array $variables = array())
     {
-        return $this->asJson(array(
-            'success' => true,
-            'name'    => 'WHOEVER',
-            'value'   => 'WHATEVER'
-        ));
-
         $request = Craft::$app->getRequest();
         $name = $request->getParam('name');
 
-        if (!Craft::$app->getUser()->id) {
+        $userId = Craft::$app->getUser()->id;
+
+        if (!$userId) {
           return false;
         }
 
-        $userId = Craft::$app->getUser()->id;
         $record = StatehelperService::getState($userId, $name);
 
         if ($request->getIsAjax()) {

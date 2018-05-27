@@ -34,7 +34,7 @@ We use the [method espoused by Craft](https://craftcms.com/docs/plugins/controll
 
     <form id="statehelper-form" class="statehelper-form" action="" method="POST">
         {{ getCsrfInput() }}
-        <input type="hidden" name="action" value="stateHelper/saveState">
+        <input type="hidden" name="action" value="statehelper/statehelper/save-state">
         <input type="hidden" name="name">
         <input type="hidden" name="value">
     </form>
@@ -55,11 +55,5 @@ We use the [method espoused by Craft](https://craftcms.com/docs/plugins/controll
 
 	{# obtain the value using the 'getState' variable #}
     {% set value = craft.statehelper.getState( NAME ) %}
-
-## craft-state-helper Roadmap
-
-Some things to do, and ideas for potential features:
-
-* Release it
 
 Brought to you by [meBooks](https://mebooks.co.nz)

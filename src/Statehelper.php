@@ -67,6 +67,14 @@ class Statehelper extends Plugin
             }
         );
 
+        // register the actions
+        // Event::on(
+        //     UrlManager::class,
+        //     UrlManager::EVENT_REGISTER_SITE_URL_RULES,
+        //     function($event) {
+        //         $event->rules['POST statehelper/statehelper/save-state'] = 'statehelper/statehelper/save-state';
+        //     }
+        // );
 /**
  * Logging in Craft involves using one of the following methods:
  *
