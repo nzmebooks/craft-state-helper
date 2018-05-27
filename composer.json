@@ -1,0 +1,45 @@
+{
+    "name": "nzmebooks/craft-state-helper",
+    "description": "A simple Craft CMS plugin that provides the ability to submit information which can be stored against a user account, and later retrieved.",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "craft-state-helper"
+    ],
+    "support": {
+        "docs": "https://github.com/nzmebooks/craft-state-helper/blob/master/README.md",
+        "issues": "https://github.com/nzmebooks/craft-state-helper/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "meBooks",
+            "homepage": "https://mebooks.co.nz"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0-RC1"
+    },
+    "autoload": {
+        "psr-4": {
+          "nzmebooks\\statehelper\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "State Helper",
+        "handle": "statehelper",
+        "hasCpSettings": false,
+        "hasCpSection": false,
+        "changelogUrl": "https://raw.githubusercontent.com/nzmebooks/craft-state-helper/master/CHANGELOG.md",
+        "components": {
+            "statehelperService": "nzmebooks\\statehelper\\services\\StatehelperService"
+        },
+        "developer": "Jason Darwin",
+        "developerUrl": "https://mebooks.co.nz",
+        "class": "nzmebooks\\statehelper\\Statehelper"
+    }
+}
