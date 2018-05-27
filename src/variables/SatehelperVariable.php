@@ -35,11 +35,11 @@ class StatehelperVariable
      */
     public function getState($name = null)
     {
-        if (!$name || !Craft::$app->user->isLoggedIn()) {
+        if (!$name || !Craft::$app->getUser()->id) {
             return false;
         }
 
-        $userId = Craft::$app->user->getUser()->id;
+        $userId = Craft::$app->getUser()->id;
 
         return Statehelper::$plugin->statehelperService->getState($userId, $name);
     }

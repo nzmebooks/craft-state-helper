@@ -55,7 +55,7 @@ class StatehelperController extends Controller
         $this->requirePostRequest();
         $request = Craft::$app->getRequest();
 
-        if (!Craft::$app->user->isLoggedIn()) {
+        if (!Craft::$app->getUser()->id) {
             return false;
         }
 
@@ -98,14 +98,20 @@ class StatehelperController extends Controller
      */
     public function actionGetState(array $variables = array())
     {
+        return $this->asJson(array(
+            'success' => true,
+            'name'    => 'WHOEVER',
+            'value'   => 'WHATEVER'
+        ));
+
         $request = Craft::$app->getRequest();
         $name = $request->getParam('name');
 
-        if (!Craft::$app->user->isLoggedIn()) {
+        if (!Craft::$app->getUser()->id) {
           return false;
         }
 
-        $userId = Craft::$app->user->getUser()->id;
+        $userId = Craft::$app->getUser()->id;
         $record = StatehelperService::getState($userId, $name);
 
         if ($request->getIsAjax()) {
