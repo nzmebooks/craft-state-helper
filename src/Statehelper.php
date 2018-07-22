@@ -17,6 +17,7 @@ use nzmebooks\statehelper\variables\StatehelperVariable;
 use Craft;
 use craft\base\Plugin;
 use craft\services\Plugins;
+use craft\elements\User;
 use craft\events\PluginEvent;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
@@ -64,6 +65,17 @@ class Statehelper extends Plugin
                 /** @var CraftVariable $variable */
                 $variable = $event->sender;
                 $variable->set('statehelper', StatehelperVariable::class);
+            }
+        );
+
+        Event::on(
+            User::class,
+            User::EVENT_BEFORE_DELETE,
+            function (Event $event) {
+                $user = $event->sender;
+                $userId = $user->id;
+
+                StatehelperService::deleteStateByUserId($userId);
             }
         );
 

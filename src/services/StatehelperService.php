@@ -116,7 +116,7 @@ class StatehelperService extends Component
           : false;
     }
 
-    public function deleteStateByUserId($userId)
+    public static function deleteStateByUserId($userId)
     {
         $params = array(
             'userId' => $userId
