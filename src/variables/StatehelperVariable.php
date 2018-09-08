@@ -41,6 +41,14 @@ class StatehelperVariable
 
         $userId = Craft::$app->getUser()->id;
 
-        return Statehelper::$plugin->statehelperService->getState($userId, $name);
+        $state = Statehelper::$plugin->statehelperService->getState($userId, $name);
+
+        // Decode the JSON string so we can access properties in our templates
+        $value = $state->value ?? false;
+        if ($value) {
+            $state->value = json_decode($value, true);
+        }
+
+        return $state;
     }
 }
