@@ -51,6 +51,15 @@ We use the [method espoused by Craft](https://craftcms.com/docs/plugins/controll
             });
     </script>
 
+We can also delete state:
+
+    <form id="statehelper-form" class="statehelper-form" action="" method="POST">
+        {{ getCsrfInput() }}
+        <input type="hidden" name="action" value="statehelper/statehelper/delete-state">
+        <input type="hidden" name="name">
+        <input type="hidden" name="value">
+    </form>
+
 ### Retrieving state in twig templates
 
 	{# obtain the value using the 'getState' variable #}

@@ -86,6 +86,48 @@ class StatehelperController extends Controller
     }
 
     /**
+     * Create and prep a State object to be sent to the Service. This
+     * method also santizes user input as much as reasonably possible.
+     *
+     * @method actionDeleteState
+     * @return void
+     *
+     */
+    public function actionDeleteState()
+    {
+        $this->requirePostRequest();
+        $request = Craft::$app->getRequest();
+
+        $userId = Craft::$app->getUser()->id;
+
+        if (!$userId) {
+            return false;
+        }
+
+        $model = new StatehelperModel();
+        $model->userId = $userId;
+        $model->name   = $request->getBodyParam('name');
+
+        if ($model->validate()) {
+            $response = Statehelper::$plugin->statehelperService->deleteState($model);
+        }
+
+        if ($request->getAcceptsJson()) {
+            if ($response) {
+                return $this->asJson(['success' => $response]);
+            } else {
+                return $this->asJson(['errors' => [Craft::t("Couldn't delete state.")]]);
+            }
+        } else {
+            Craft::$app->getUrlManager()->setRouteParams([
+              'state' => $model
+            ]);
+
+            return $this->redirectToPostedUrl();
+        }
+    }
+
+    /**
      * Retrieve a state object for the current user and specified name.
      *
      * @method actionGetState

@@ -94,6 +94,32 @@ class StatehelperService extends Component
     }
 
     /**
+     * Delete the supplied state against the user in the database
+     *
+     * From any other plugin file, call it like this:
+     *     Statehelper::$plugin->statehelperService->deleteState()
+     *
+     * @method deleteState
+     * @param object $model A State object.
+     * @return boolean
+     *
+     */
+    public function deleteState(StatehelperModel $model)
+    {
+        $userId = $model->userId;
+        $name   = $model->name;
+
+        $params = array(
+            'userId' => $userId,
+            'name'   => $name
+        );
+
+        $records = StatehelperRecord::deleteAll($params);
+
+        return true;
+    }
+
+    /**
      * Get the state for the supplied userId and name
      *
      * @method getState

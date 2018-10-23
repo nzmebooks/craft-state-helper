@@ -70,7 +70,7 @@ class StatehelperModel extends Model
         return [
             ['userId', 'integer'],
             [['name', 'value'], 'string'],
-            [['userId', 'name', 'value'], 'required'],
+            [['userId', 'name'], 'required'],
         ];
     }
 }
