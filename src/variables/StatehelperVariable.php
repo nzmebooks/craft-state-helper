@@ -24,6 +24,12 @@ class StatehelperVariable
 {
     // Public Methods
     // =========================================================================
+    public function getPluginName()
+    {
+      $pluginName = Statehelper::$plugin->getName();
+
+        return $pluginName;
+    }
 
     /**
      * From any Twig template, call it like this:

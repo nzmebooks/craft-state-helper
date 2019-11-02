@@ -1,0 +1,29 @@
+{% extends 'statehelper/_layouts' %}
+
+{% set tabs = craft.statehelper.getCpTabs %}
+
+{% set selectedTab = tab %}
+{% set fullPageForm = true %}
+
+{% block blockContent %}
+
+    {% block actionButton %}{% endblock %}
+
+    <div class="grid">
+        <div class="item" data-colspan="2">
+            <div class="widget pane">
+                <h2>User Pathway Progress Report</h2>
+                <p>Export a CSV file showing pathway progress for each user (in terms of pages completed).</p>
+                <div class="body">
+                    <form method="post" action="" class="centered" accept-charset="utf-8">
+                        {{ getCsrfInput() }}
+                        <input type="hidden" name="action" value="statehelper/default/download-pathway-progress">
+                        <input type="submit" class="btn submit js-btn-export" value="{{ 'Export'|t }}">
+                        <div class="spinner js-export-spinner hidden"></div>
+                    </form>
+
+                </div><!-- Body -->
+            </div><!-- Widget -->
+        </div><!-- Item -->
+    </div><!-- Grid -->
+{% endblock %}

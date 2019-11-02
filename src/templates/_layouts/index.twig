@@ -1,0 +1,18 @@
+{% extends parentLayout | default('_layouts/cp') %}
+
+{% do view.registerAssetBundle('nzmebooks\\statehelper\\bundles\\StatehelperBundle') %}
+
+{% if noTabs is not defined %}
+    {% set tabs = {
+        home: { label: 'Home' | t, url: url('state-helper/') },
+    } %}
+{% endif %}
+
+{% if title is not defined %}
+    {% set title = craft.statehelper.getPluginName ~ ': ' ~ tabs[selectedTab].label %}
+{% endif %}
+
+{% set content %}
+    {% block blockContent %}
+    {% endblock %}
+{% endset %}

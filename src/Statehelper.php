@@ -21,6 +21,7 @@ use craft\elements\User;
 use craft\events\PluginEvent;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
+use craft\events\RegisterUrlRulesEvent;
 
 use yii\base\Event;
 
@@ -56,6 +57,15 @@ class Statehelper extends Plugin
             'statehelperController' => StatehelperController::class,
             'statehelperService' => StatehelperService::class,
         ]);
+
+        // Register our control panel rules
+        Event::on(
+            UrlManager::class,
+            UrlManager::EVENT_REGISTER_CP_URL_RULES,
+            function(RegisterUrlRulesEvent $event) {
+                $event->rules['statehelper'] = 'statehelper/default';
+            }
+        );
 
         // Register our variables
         Event::on(

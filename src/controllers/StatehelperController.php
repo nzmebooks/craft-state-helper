@@ -156,7 +156,7 @@ class StatehelperController extends Controller
                 ));
             }
             else {
-                return $this->returnErrorJson(Craft::t("Couldn't get state"));
+                return $this->returnErrorJson(Craft::t('Couldn\'t get state'));
             }
         }
         else {

@@ -17,6 +17,8 @@ use nzmebooks\statehelper\events\StatehelperEvent;
 
 use Craft;
 use craft\base\Component;
+use craft\helpers\App;
+use craft\helpers\StringHelper;
 
 /**
  * StatehelperService Service
@@ -140,6 +142,119 @@ class StatehelperService extends Component
         return $record
           ? $record
           : false;
+    }
+
+    /**
+     * Get the pathways progress for the all users
+     *
+     * @method getPathwayProgress
+     * @return Array  An array of results.
+     *
+     */
+    public static function getPathwayProgress()
+    {
+        $sql = "
+          SELECT users.email, users.firstName, users.lastName, contentPathways.title AS pathwayTitle, contentCollections.title AS collectionTitle, contentEntries.title AS entryTitle
+          FROM users, categorygroups
+          JOIN categories                        ON categories.groupId            = categorygroups.id
+          JOIN content   AS contentPathways      ON contentPathways.elementId     = categories.id
+          JOIN relations AS relationsPathways    ON relationsPathways.sourceId    = categories.id
+          JOIN content   AS contentCollections   ON contentCollections.elementId  = relationsPathways.targetId
+          JOIN relations AS relationsCollections ON relationsCollections.sourceId = relationsPathways.targetId
+          JOIN entries                           ON entries.id                    = relationsCollections.targetId
+          JOIN content   AS contentEntries       ON contentEntries.elementId      = relationsCollections.targetId
+          WHERE name = 'Pathways'
+          AND users.id IN (
+            SELECT statehelper.userId
+            FROM statehelper
+            JOIN entries ON entries.id = SUBSTRING(statehelper.name, 8)
+            WHERE statehelper.name LIKE 'bottom:%'
+            AND statehelper.userId = users.id
+            AND entries.id = relationsCollections.targetId
+          )
+          ORDER BY users.id, relationsPathways.sourceId, relationsPathways.sortOrder, relationsCollections.sortOrder;
+        ";
+
+        // We need to return the column headers as well as the data
+        $command = Craft::$app->getDb()->createCommand($sql);
+        $reader = $command->query();
+        $statement = $command->pdoStatement;
+
+        $results = [];
+        $headers = [];
+
+        for ($j = 0; $j < $statement->columnCount(); $j++) {
+            $headers[] = $statement->getColumnMeta($j)['name'];
+        }
+
+        $results['headers'] = $headers;
+        $results['rows'] = $reader->readAll();
+
+        return $results;
+    }
+
+    /**
+     * Format the supplied data as a csv.
+     *
+     * @param array $data
+     *
+     * @return string
+     *
+     * @throws Exception
+     */
+    public static function formatAsCsv($data)
+    {
+        // Get max power
+        App::maxPowerCaptain();
+
+        // Get delimiter
+        $delimiter = ',';
+
+        // Open output buffer
+        ob_start();
+
+        // Write to output stream
+        $export = fopen('php://output', 'w');
+
+        // If there is data, process
+        if (is_array($data) && count($data)) {
+
+            // Gather headers
+            $headers = array();
+
+            foreach ($data['headers'] as $header) {
+                // Encode and add to rows
+                $headers[] = StringHelper::convertToUTF8($header);
+            }
+            // Add rows to export
+            fputcsv($export, $headers, $delimiter);
+
+            // Loop through rows
+             foreach ($data['rows'] as $fields) {
+
+                // Gather row data
+                $rows = array();
+
+                // Loop through the fields
+                foreach ($fields as $field) {
+                    // Encode and add to rows
+                    $rows[] = StringHelper::convertToUTF8($field);
+                }
+
+                // Add rows to export
+                fputcsv($export, $rows, $delimiter);
+            }
+        }
+
+        // Close buffer and return data
+        fclose($export);
+        $data = ob_get_clean();
+
+        // Use windows friendly newlines
+        $data = str_replace("\n", "\r\n", $data);
+
+        // Return the data to controller
+        return $data;
     }
 
     public static function deleteStateByUserId($userId)
