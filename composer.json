@@ -2,7 +2,7 @@
     "name": "nzmebooks/craft-state-helper",
     "description": "A simple Craft CMS plugin that provides the ability to submit information which can be stored against a user account, and later retrieved.",
     "type": "craft-plugin",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "keywords": [
         "craft",
         "cms",
@@ -33,7 +33,7 @@
         "name": "State Helper",
         "handle": "statehelper",
         "hasCpSettings": false,
-        "hasCpSection": false,
+        "hasCpSection": true,
         "changelogUrl": "https://raw.githubusercontent.com/nzmebooks/craft-state-helper/master/CHANGELOG.md",
         "components": {
             "statehelperService": "nzmebooks\\statehelper\\services\\StatehelperService"

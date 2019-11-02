@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.2.1 - 2019-11-03
+### Added
+- Ensure State Helper appears as a CP section
+
 ## 1.2.0 - 2019-11-03
 ### Added
 - User Pathway Progress Report
