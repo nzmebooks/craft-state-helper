@@ -254,18 +254,18 @@ class StatehelperService extends Component
      */
     public static function getEventsAttended()
     {
-        $sql = "
+       $sql = "
         SELECT
           users.email,
           users.firstName,
           users.lastName,
-          content.title AS event,
+          statehelper.value,
           statehelper.dateUpdated  AS dateUpdated
         FROM users
         JOIN statehelper ON users.id = statehelper.userId
-        JOIN content ON content.elementId = REGEXP_SUBSTR(statehelper.value, '[0-9]+')
         WHERE statehelper.name = 'events'
         AND statehelper.value <> '{}'
+        AND REGEXP_SUBSTR(statehelper.value, 'undefined') <> 'undefined'
         ORDER BY
           users.email;
         ";
