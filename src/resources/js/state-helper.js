@@ -1,6 +1,7 @@
 $(function () {
   $('.js-btn-export').click(function () {
-    $('.js-export-spinner').removeClass('hidden')
+    var $spinner = $(this).closest('.js-form-export').find('.js-export-spinner');
+    $spinner.removeClass('hidden')
 
     // Start polling for the cookie showing that the export has finished.
     // http://stackoverflow.com/questions/1106377/detect-when-browser-receives-file-download
@@ -8,7 +9,7 @@ $(function () {
       var token = getCookie('statehelperExportFinished')
 
       if (token) {
-        $('.js-export-spinner').addClass('hidden')
+        $spinner.addClass('hidden')
         expireCookie('statehelperExportFinished')
         window.clearInterval(poll)
       }

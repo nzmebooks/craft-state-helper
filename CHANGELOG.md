@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.3.0 - 2020-05-16
+### Added
+- Add User Currently-Selected Pathway Report and User Events Attended Report
+
 ## 1.2.1 - 2019-11-03
 ### Added
 - Ensure State Helper appears as a CP section

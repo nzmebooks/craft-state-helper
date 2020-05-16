@@ -75,4 +75,66 @@ class DefaultController extends Controller
 
         Craft::$app->end();
     }
+
+    /**
+     * Download export of users currently-selected pathway.
+     *
+     * @return string CSV
+     */
+    public function actionDownloadCurrentPathway()
+    {
+        // Get data
+        $results = StatehelperService::getCurrentPathway();
+        $csv = StatehelperService::formatAsCsv($results);
+
+        // Set a cookie to indicate that the export has finished.
+        $cookie = new Cookie(['name' => 'statehelperExportFinished']);
+        $cookie->value = 'true';
+        $cookie->expire = time() + 3600;
+        $cookie->httpOnly = false;
+
+        Craft::$app->getResponse()->getCookies()->add($cookie);
+
+        $dateGenerated = DateTimeHelper::currentUTCDateTime();
+        $dateGenerated = $dateGenerated->format('d-m-Y\TH:i:s');
+
+        // Download the csv
+        Craft::$app->getResponse()->sendContentAsFile($csv, "state_helper_export_current_pathway_{$dateGenerated}.csv", array(
+          'forceDownload' => true,
+          'mimeType' => 'text/csv'
+        ));
+
+        Craft::$app->end();
+    }
+
+    /**
+     * Download export of events marked as attended by users .
+     *
+     * @return string CSV
+     */
+    public function actionDownloadEventsAttended()
+    {
+        // Get data
+        $results = StatehelperService::getEventsAttended();
+        $csv = StatehelperService::formatAsCsv($results);
+
+        // Set a cookie to indicate that the export has finished.
+        $cookie = new Cookie(['name' => 'statehelperExportFinished']);
+        $cookie->value = 'true';
+        $cookie->expire = time() + 3600;
+        $cookie->httpOnly = false;
+
+        Craft::$app->getResponse()->getCookies()->add($cookie);
+
+        $dateGenerated = DateTimeHelper::currentUTCDateTime();
+        $dateGenerated = $dateGenerated->format('d-m-Y\TH:i:s');
+
+        // Download the csv
+        Craft::$app->getResponse()->sendContentAsFile($csv, "state_helper_export_events_attended_{$dateGenerated}.csv", array(
+          'forceDownload' => true,
+          'mimeType' => 'text/csv'
+        ));
+
+        Craft::$app->end();
+    }
 }

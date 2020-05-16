@@ -154,8 +154,15 @@ class StatehelperService extends Component
     public static function getPathwayProgress()
     {
         $sql = "
-          SELECT users.email, users.firstName, users.lastName, contentPathways.title AS pathwayTitle, contentCollections.title AS collectionTitle, contentEntries.title AS entryTitle
-          FROM users, categorygroups
+          SELECT
+            users.email,
+            users.firstName,
+            users.lastName,
+            contentPathways.title    AS pathwayTitle,
+            contentCollections.title AS collectionTitle,
+            contentEntries.title     AS entryTitle,
+            statehelper.dateUpdated  AS dateCompleted
+          FROM users, statehelper, categorygroups
           JOIN categories                        ON categories.groupId            = categorygroups.id
           JOIN content   AS contentPathways      ON contentPathways.elementId     = categories.id
           JOIN relations AS relationsPathways    ON relationsPathways.sourceId    = categories.id
@@ -163,16 +170,104 @@ class StatehelperService extends Component
           JOIN relations AS relationsCollections ON relationsCollections.sourceId = relationsPathways.targetId
           JOIN entries                           ON entries.id                    = relationsCollections.targetId
           JOIN content   AS contentEntries       ON contentEntries.elementId      = relationsCollections.targetId
-          WHERE name = 'Pathways'
-          AND users.id IN (
-            SELECT statehelper.userId
-            FROM statehelper
-            JOIN entries ON entries.id = SUBSTRING(statehelper.name, 8)
-            WHERE statehelper.name LIKE 'bottom:%'
-            AND statehelper.userId = users.id
-            AND entries.id = relationsCollections.targetId
-          )
-          ORDER BY users.id, relationsPathways.sourceId, relationsPathways.sortOrder, relationsCollections.sortOrder;
+          WHERE categorygroups.name = 'Pathways'
+          AND statehelper.userId = users.id
+          AND entries.id = SUBSTRING(statehelper.name, 8)
+          AND statehelper.name LIKE 'bottom:%'
+          AND entries.id = relationsCollections.targetId
+          ORDER BY
+            users.id,
+            relationsPathways.sourceId,
+            relationsPathways.sortOrder,
+            relationsCollections.sortOrder;
+        ";
+
+        // We need to return the column headers as well as the data
+        $command = Craft::$app->getDb()->createCommand($sql);
+        $reader = $command->query();
+        $statement = $command->pdoStatement;
+
+        $results = [];
+        $headers = [];
+
+        for ($j = 0; $j < $statement->columnCount(); $j++) {
+            $headers[] = $statement->getColumnMeta($j)['name'];
+        }
+
+        $results['headers'] = $headers;
+        $results['rows'] = $reader->readAll();
+
+        return $results;
+    }
+
+    /**
+     * Get the curently-selected pathway for the all users
+     *
+     * @method getCurrentPathway
+     * @return Array  An array of results.
+     *
+     */
+    public static function getCurrentPathway()
+    {
+        $sql = "
+        SELECT
+          users.email,
+          users.firstName,
+          users.lastName,
+          contentPathways.title    AS pathwayTitle,
+          statehelper.dateUpdated  AS dateUpdated
+        FROM users, statehelper, categorygroups
+        JOIN categories                        ON categories.groupId            = categorygroups.id
+        JOIN content   AS contentPathways      ON contentPathways.elementId     = categories.id
+        WHERE categorygroups.name = 'Pathways'
+        AND statehelper.userId = users.id
+        AND categories.id = REGEXP_SUBSTR(statehelper.value, '[0-9]+')
+        AND statehelper.name = 'pathwayCurrent'
+        ORDER BY
+          users.email;
+      ";
+
+      // We need to return the column headers as well as the data
+      $command = Craft::$app->getDb()->createCommand($sql);
+      $reader = $command->query();
+      $statement = $command->pdoStatement;
+
+      $results = [];
+      $headers = [];
+
+      for ($j = 0; $j < $statement->columnCount(); $j++) {
+          $headers[] = $statement->getColumnMeta($j)['name'];
+      }
+
+      $results['headers'] = $headers;
+      $results['rows'] = $reader->readAll();
+
+      return $results;
+    }
+
+    /**
+     * Get the events attended for the all users
+     *
+     * @method getEventsAttended
+     * @return Array  An array of results.
+     *
+     */
+    public static function getEventsAttended()
+    {
+        $sql = "
+        SELECT
+          users.email,
+          users.firstName,
+          users.lastName,
+          content.title AS event,
+          statehelper.dateUpdated  AS dateUpdated
+        FROM users
+        JOIN statehelper ON users.id = statehelper.userId
+        JOIN content ON content.elementId = REGEXP_SUBSTR(statehelper.value, '[0-9]+')
+        WHERE statehelper.name = 'events'
+        AND statehelper.value <> '{}'
+        ORDER BY
+          users.email;
         ";
 
         // We need to return the column headers as well as the data
