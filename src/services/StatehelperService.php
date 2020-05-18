@@ -265,7 +265,6 @@ class StatehelperService extends Component
         JOIN statehelper ON users.id = statehelper.userId
         WHERE statehelper.name = 'events'
         AND statehelper.value <> '{}'
-        AND REGEXP_SUBSTR(statehelper.value, 'undefined') <> 'undefined'
         ORDER BY
           users.email;
         ";
