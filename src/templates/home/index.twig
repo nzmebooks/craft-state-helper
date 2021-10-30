@@ -16,7 +16,7 @@
                 <p>Export a CSV file showing pathway progress for each user (in terms of pages completed).</p>
                 <div class="body">
                     <form method="post" action="" class="js-form-export centered" accept-charset="utf-8">
-                        {{ getCsrfInput() }}
+                        {{ csrfInput() }}
                         <input type="hidden" name="action" value="statehelper/default/download-pathway-progress">
                         <input type="submit" class="btn submit js-btn-export" value="{{ 'Export'|t }}">
                         <div class="spinner js-export-spinner hidden"></div>
@@ -30,7 +30,7 @@
                 <p>Export a CSV file showing the currently-selected pathway for each user.</p>
                 <div class="body">
                     <form method="post" action="" class="js-form-export centered" accept-charset="utf-8">
-                        {{ getCsrfInput() }}
+                        {{ csrfInput() }}
                         <input type="hidden" name="action" value="statehelper/default/download-current-pathway">
                         <input type="submit" class="btn submit js-btn-export" value="{{ 'Export'|t }}">
                         <div class="spinner js-export-spinner hidden"></div>
@@ -44,7 +44,7 @@
                 <p>Export a CSV file showing the events marked as attended for each user.</p>
                 <div class="body">
                     <form method="post" action="" class="js-form-export centered" accept-charset="utf-8">
-                        {{ getCsrfInput() }}
+                        {{ csrfInput() }}
                         <input type="hidden" name="action" value="statehelper/default/download-events-attended">
                         <input type="submit" class="btn submit js-btn-export" value="{{ 'Export'|t }}">
                         <div class="spinner js-export-spinner hidden"></div>

@@ -33,7 +33,7 @@ To install the plugin, follow these instructions.
 We use the [method espoused by Craft](https://craftcms.com/docs/plugins/controllers#posting-to-controller-actions), whereby we use a hidden form and post via ajax:
 
     <form id="statehelper-form" class="statehelper-form" action="" method="POST">
-        {{ getCsrfInput() }}
+        {{ csrfInput() }}
         <input type="hidden" name="action" value="statehelper/statehelper/save-state">
         <input type="hidden" name="name">
         <input type="hidden" name="value">
@@ -54,7 +54,7 @@ We use the [method espoused by Craft](https://craftcms.com/docs/plugins/controll
 We can also delete state:
 
     <form id="statehelper-form" class="statehelper-form" action="" method="POST">
-        {{ getCsrfInput() }}
+        {{ csrfInput() }}
         <input type="hidden" name="action" value="statehelper/statehelper/delete-state">
         <input type="hidden" name="name">
         <input type="hidden" name="value">
