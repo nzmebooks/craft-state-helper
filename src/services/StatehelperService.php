@@ -39,6 +39,13 @@ class StatehelperService extends Component
     // Public Methods
     // =========================================================================
 
+    public function log($message)
+    {
+      $logfile = Craft::getAlias('@storage/logs/statehelper.log');
+      $log = date('Y-m-d H:i:s').' '.$message."\n";
+      \craft\helpers\FileHelper::writeToFile($logfile, $log, ['append' => true]);
+    }
+
     /**
      * Save the supplied state against the user in the database
      *
@@ -62,6 +69,11 @@ class StatehelperService extends Component
         );
 
         $record = StatehelperRecord::find()->where($params)->one();
+
+        if ($name === "scenario:1" || $name === "scenario:2") {
+          $this->log("$name for $userId:");
+          $this->log("  $value");
+        }
 
         if (!$record) {
             // We've not saved this name for this user before,
@@ -246,7 +258,7 @@ class StatehelperService extends Component
     }
 
     /**
-     * Get the events attended for the all users
+     * Get the events attended for all users
      *
      * @method getEventsAttended
      * @return Array  An array of results.
@@ -285,6 +297,120 @@ class StatehelperService extends Component
         $results['rows'] = $reader->readAll();
 
         return $results;
+    }
+
+    /**
+     * Get the progress of users through the scenarios
+     *
+     * @method getScenarioProgress
+     * @return Array  An array of results.
+     *
+     */
+    public static function getScenarioProgress()
+    {
+       $sql = "
+        SELECT
+          users.email,
+          users.firstName,
+          users.lastName,
+          statehelper.value,
+          statehelper.dateUpdated  AS dateUpdated
+        FROM users
+        JOIN statehelper ON users.id = statehelper.userId
+        WHERE statehelper.name LIKE 'scenario:%'
+        AND statehelper.value <> '{}'
+        ORDER BY
+          users.email,
+          statehelper.name,
+          statehelper.dateUpdated;
+        ";
+
+        // We need to return the column headers as well as the data
+        $command = Craft::$app->getDb()->createCommand($sql);
+        $reader = $command->query();
+        $statement = $command->pdoStatement;
+
+        $results = [];
+        $headers = [];
+
+        for ($j = 0; $j < $statement->columnCount(); $j++) {
+          if ($statement->getColumnMeta($j)['name'] !== 'value'
+          && $statement->getColumnMeta($j)['name'] !== 'dateUpdated') {
+            $headers[] = $statement->getColumnMeta($j)['name'];
+          }
+        }
+
+        // Add the additional headers that we need as a result of
+        // flattening the arrays in the row
+        $headers[] = 'scenarioID';
+        $headers[] = 'domainAgency';
+        $headers[] = 'scenarioStartDate';
+        $headers[] = 'scenarioCompletionDate';
+        $headers[] = 'attempt';
+        $headers[] = 'scenarioCompleted';
+        $headers[] = 'chenPresent';
+        $headers[] = 'totalScore';
+        $headers[] = 'lastVisitedSlide';
+        $headers[] = 'mileStoneId';
+        $headers[] = 'mileStoneName';
+        $headers[] = 'mileStoneData';
+
+        $results['headers'] = $headers;
+        $rows = $reader->readAll();
+
+        $progressRows = array();
+        foreach ($rows as $row) {
+          $value = json_decode($row['value']);
+          foreach ($value->progress as $progress) {
+
+            if (count($progress->mileStones)) {
+              foreach ($progress->mileStones as $mileStone) {
+                $progressRow = self::flattenRowProgress($row, $progress);
+                $progressRow['mileStoneId'] = $mileStone->mileStoneId ?? '';
+                $progressRow['mileStoneName'] = $mileStone->mileStoneName ?? '';
+                $progressRow['mileStoneData'] = $mileStone->mileStoneData ?? '';
+                $progressRows[] = $progressRow;
+              }
+            } else {
+              $progressRow = self::flattenRowProgress($row, $progress);
+              $progressRow['mileStoneId'] = '';
+              $progressRow['mileStoneName'] = '';
+              $progressRow['mileStoneData'] = '';
+              $progressRows[] = $progressRow;
+            }
+          }
+        }
+
+        $results['rows'] = $progressRows;
+
+        return $results;
+    }
+
+    /**
+     * Format the row progress as a flattened array
+     *
+     * @method flattenRowProgress
+     * @return Array  An array of the flattened progress fields for the row.
+     *
+     */
+    private static function flattenRowProgress($row, $progress)
+    {
+      $progressRow = array();
+      $progressRow['email'] = $row['email'] ?? '';
+      $progressRow['firstName'] = $row['firstName'] ?? '';
+      $progressRow['lastName'] = $row['lastName'] ?? '';
+      // $progressRow['dateUpdated'] = $row['dateUpdated'] ?? '';
+      $progressRow['scenarioID'] = $progress->scenarioID ?? '';
+      $progressRow['domainAgency'] = $progress->domainAgency ?? '';
+      $progressRow['scenarioStartDate'] = $progress->scenarioStartDate ?? '';
+      $progressRow['scenarioCompletionDate'] = $progress->scenarioCompletionDate ?? '';
+      $progressRow['attempt'] = $progress->attempt ?? '';
+      $progressRow['scenarioCompleted'] = ($progress->scenarioCompleted ? 'true' : 'false') ?? '';
+      $progressRow['chenPresent'] = ($progress->chenPresent ? 'true' : 'false') ?? '';
+      $progressRow['totalScore'] = $progress->totalScore ?? '';
+      $progressRow['lastVisitedSlide'] = $progress->lastVisitedSlide ?? '';
+
+      return $progressRow;
     }
 
     /**

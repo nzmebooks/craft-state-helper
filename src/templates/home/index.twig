@@ -52,5 +52,19 @@
                 </div><!-- Body -->
             </div><!-- Widget -->
         </div><!-- Item -->
+        <div class="item" data-colspan="1">
+            <div class="widget pane">
+                <h2>User Scenario Progress Report</h2>
+                <p>Export a CSV file showing the progress through the scenarios for each user.</p>
+                <div class="body">
+                    <form method="post" action="" class="js-form-export centered" accept-charset="utf-8">
+                        {{ getCsrfInput() }}
+                        <input type="hidden" name="action" value="statehelper/default/download-scenario-progress">
+                        <input type="submit" class="btn submit js-btn-export" value="{{ 'Export'|t }}">
+                        <div class="spinner js-export-spinner hidden"></div>
+                    </form>
+                </div><!-- Body -->
+            </div><!-- Widget -->
+        </div><!-- Item -->
     </div><!-- Grid -->
 {% endblock %}

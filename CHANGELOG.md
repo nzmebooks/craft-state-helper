@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.3.4 - 2021-10-30
+### Added
+- Add getScenarioProgress method
+
 ## 1.3.3 - 2021-10-30
 ### Modified
 - Replaced deprecaed getCsrfInput() with csrfInput()

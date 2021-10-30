@@ -137,4 +137,35 @@ class DefaultController extends Controller
 
         Craft::$app->end();
     }
+
+    /**
+     * Download export of users progress through the scenarios.
+     *
+     * @return string CSV
+     */
+    public function actionDownloadScenarioProgress()
+    {
+        // Get data
+        $results = StatehelperService::getScenarioProgress();
+        $csv = StatehelperService::formatAsCsv($results);
+
+        // Set a cookie to indicate that the export has finished.
+        $cookie = new Cookie(['name' => 'statehelperExportFinished']);
+        $cookie->value = 'true';
+        $cookie->expire = time() + 3600;
+        $cookie->httpOnly = false;
+
+        Craft::$app->getResponse()->getCookies()->add($cookie);
+
+        $dateGenerated = DateTimeHelper::currentUTCDateTime();
+        $dateGenerated = $dateGenerated->format('d-m-Y\TH:i:s');
+
+        // Download the csv
+        Craft::$app->getResponse()->sendContentAsFile($csv, "state_helper_export_scenario_progress_{$dateGenerated}.csv", array(
+          'forceDownload' => true,
+          'mimeType' => 'text/csv'
+        ));
+
+        Craft::$app->end();
+    }
 }

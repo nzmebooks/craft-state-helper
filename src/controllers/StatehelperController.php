@@ -39,6 +39,13 @@ use craft\web\Controller;
  */
 class StatehelperController extends Controller
 {
+    // We disable CSRF validation for the entire controller
+    // as we need to let static html pages have access to the methods
+    // on this controller.
+    // This is not a security issue, as we always check for the logged-in user:
+    //   $userId = Craft::$app->getUser()->id;
+    public $enableCsrfValidation = false;
+
     // Public Methods
     // =========================================================================
 
@@ -74,7 +81,10 @@ class StatehelperController extends Controller
             if ($response) {
                 return $this->asJson(['success' => $response]);
             } else {
-                return $this->asJson(['errors' => [Craft::t("Couldn't save state.")]]);
+                return $this->asJson([
+                  'success' => false,
+                  'errors' => ["Couldn't save state for key $model->name."]
+                ]);
             }
         } else {
             Craft::$app->getUrlManager()->setRouteParams([
@@ -116,7 +126,10 @@ class StatehelperController extends Controller
             if ($response) {
                 return $this->asJson(['success' => $response]);
             } else {
-                return $this->asJson(['errors' => [Craft::t("Couldn't delete state.")]]);
+                return $this->asJson([
+                  'success' => false,
+                  'errors' => ["Couldn't delete state for key: $model->name."],
+                ]);
             }
         } else {
             Craft::$app->getUrlManager()->setRouteParams([
@@ -137,7 +150,7 @@ class StatehelperController extends Controller
     public function actionGetState(array $variables = array())
     {
         $request = Craft::$app->getRequest();
-        $name = $request->getParam('name');
+        $name = $request->getBodyParam('name');
 
         $userId = Craft::$app->getUser()->id;
 
@@ -145,22 +158,23 @@ class StatehelperController extends Controller
           return false;
         }
 
-        $record = StatehelperService::getState($userId, $name);
+        $record = Statehelper::$plugin->statehelperService->getState($userId, $name);
 
-        if ($request->getIsAjax()) {
-            if ($record) {
-                return $this->asJson(array(
-                    'success' => true,
-                    'name'    => $name,
-                    'value'   => $record->value
-                ));
-            }
-            else {
-                return $this->returnErrorJson(Craft::t('Couldn\'t get state'));
-            }
-        }
-        else {
-            return $this->redirect($request->getReferrer());
+        if ($request->getAcceptsJson()) {
+          if ($record) {
+            return $this->asJson([
+              'success' => true,
+              'value'   => $record->value,
+            ]);
+          } else {
+              return $this->asJson([
+                'success' => false,
+                'value'   => null,
+                'errors' => ["Couldn't find state for key: $name"],
+              ]);
+          }
+        } else {
+            return $this->redirectToPostedUrl();
         }
     }
 }
