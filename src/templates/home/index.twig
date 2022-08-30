@@ -56,7 +56,7 @@
                 <p>Export a CSV file showing the progress through the scenarios for each user.</p>
                 <div class="body">
                     <form method="post" action="" class="js-form-export centered" accept-charset="utf-8">
-                        {{ getCsrfInput() }}
+                        {{ csrfInput() }}
                         <input type="hidden" name="action" value="statehelper/default/download-scenario-progress">
                         <input type="submit" class="btn submit js-btn-export" value="{{ 'Export'|t }}">
                         <div class="spinner js-export-spinner hidden"></div>
