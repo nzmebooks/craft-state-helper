@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.1.7 - 2023-08-22
+### Modified
+- Upgrade craftcms/cms to 4.4.17 to placate Dependabot
+
 ## 2.1.5 - 2023-06-27
 ### Modified
 - Update composer.json to 2.1.5
