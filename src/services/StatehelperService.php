@@ -444,7 +444,7 @@ class StatehelperService extends Component
 
             foreach ($data['headers'] as $header) {
                 // Encode and add to rows
-                $headers[] = StringHelper::convertToUTF8($header);
+                $headers[] = is_string($header) ? StringHelper::convertToUTF8($header) : '';
             }
             // Add rows to export
             fputcsv($export, $headers, $delimiter);
@@ -458,7 +458,7 @@ class StatehelperService extends Component
                 // Loop through the fields
                 foreach ($fields as $field) {
                     // Encode and add to rows
-                    $rows[] = StringHelper::convertToUTF8($field);
+                    $rows[] = is_string($field) ? StringHelper::convertToUTF8($field) : '';
                 }
 
                 // Add rows to export
