@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.0.0 - 2024-08-18
+### Modified
+- Upgrade to Craft 5
+
 ## 2.1.8 - 2024-07-25
 ### Modified
 - Ensure only strings are passed to StringHelper::convertToUTF8

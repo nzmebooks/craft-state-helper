@@ -2,7 +2,7 @@
     "name": "nzmebooks/craft-state-helper",
     "description": "A simple Craft CMS plugin that provides the ability to submit information which can be stored against a user account, and later retrieved.",
     "type": "craft-plugin",
-    "version": "2.1.8",
+    "version": "3.0.0",
     "keywords": [
         "craft",
         "cms",
@@ -22,8 +22,8 @@
         }
     ],
     "require": {
-        "craftcms/cms": "^4.4",
-        "php": "^8.0.2"
+        "craftcms/cms": "^5.0.0-beta.1",
+        "php": "^8.2"
     },
     "autoload": {
         "psr-4": {
