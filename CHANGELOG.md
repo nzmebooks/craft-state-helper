@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.0.1 - 2024-08-26
+### Modified
+- Ensure Resources tab show content now that content has been migrated to elements_sites
+
 ## 4.0.0 - 2024-08-25
 ### Modified
 - Tag repo as 4.0.0 for Craft 5

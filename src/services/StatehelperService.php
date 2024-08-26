@@ -175,13 +175,13 @@ class StatehelperService extends Component
             contentEntries.title     AS entryTitle,
             statehelper.dateUpdated  AS dateCompleted
           FROM users, statehelper, categorygroups
-          JOIN categories                        ON categories.groupId            = categorygroups.id
-          JOIN content   AS contentPathways      ON contentPathways.elementId     = categories.id
-          JOIN relations AS relationsPathways    ON relationsPathways.sourceId    = categories.id
-          JOIN content   AS contentCollections   ON contentCollections.elementId  = relationsPathways.targetId
-          JOIN relations AS relationsCollections ON relationsCollections.sourceId = relationsPathways.targetId
-          JOIN entries                           ON entries.id                    = relationsCollections.targetId
-          JOIN content   AS contentEntries       ON contentEntries.elementId      = relationsCollections.targetId
+          JOIN categories                             ON categories.groupId            = categorygroups.id
+          JOIN elements_sites AS contentPathways      ON contentPathways.elementId     = categories.id
+          JOIN relations      AS relationsPathways    ON relationsPathways.sourceId    = categories.id
+          JOIN elements_sites AS contentCollections   ON contentCollections.elementId  = relationsPathways.targetId
+          JOIN relations      AS relationsCollections ON relationsCollections.sourceId = relationsPathways.targetId
+          JOIN entries                                ON entries.id                    = relationsCollections.targetId
+          JOIN elements_sites AS contentEntries       ON contentEntries.elementId      = relationsCollections.targetId
           WHERE categorygroups.name = 'Pathways'
           AND statehelper.userId = users.id
           AND entries.id = SUBSTRING(statehelper.name, 8)
@@ -229,8 +229,8 @@ class StatehelperService extends Component
           contentPathways.title    AS pathwayTitle,
           statehelper.dateUpdated  AS dateUpdated
         FROM users, statehelper, categorygroups
-        JOIN categories                        ON categories.groupId            = categorygroups.id
-        JOIN content   AS contentPathways      ON contentPathways.elementId     = categories.id
+        JOIN categories                          ON categories.groupId            = categorygroups.id
+        JOIN elements_sites   AS contentPathways ON contentPathways.elementId     = categories.id
         WHERE categorygroups.name = 'Pathways'
         AND statehelper.userId = users.id
         AND categories.id = REGEXP_SUBSTR(statehelper.value, '[0-9]+')
