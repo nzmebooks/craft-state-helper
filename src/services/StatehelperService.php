@@ -10,7 +10,6 @@
 
 namespace nzmebooks\statehelper\services;
 
-use nzmebooks\statehelper\Statehelper;
 use nzmebooks\statehelper\models\StatehelperModel;
 use nzmebooks\statehelper\records\StatehelperRecord;
 use nzmebooks\statehelper\events\StatehelperEvent;

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.1.0 - 2025-03-25
+### Modified
+- Upgrade craftcms/cms to ^5.6
+
 ## 4.0.1 - 2024-08-26
 ### Modified
 - Ensure Resources tab show content now that content has been migrated to elements_sites
